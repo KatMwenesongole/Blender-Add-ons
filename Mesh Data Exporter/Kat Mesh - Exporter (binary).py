@@ -15,15 +15,14 @@ bl_info = {
 
 import bpy
 import bmesh
+import struct
+import concurrent.futures
 
 from bpy_extras.io_utils import ExportHelper
 from bpy.props import StringProperty, BoolProperty, EnumProperty
 from bpy.types import Operator
 from math      import sqrt, pi
 from mathutils import Matrix, Vector
-
-import struct
-import concurrent.futures
 
 def triangulate_object(obj):
     me = obj.data
@@ -220,7 +219,7 @@ def write(context, filepath):
 
 class ExportMeshData(Operator, ExportHelper):
     """Export mesh data in Kat Mesh format [binary] (.kmesh)""" 
-    bl_idname = "export_test.some_data"  # important since its how bpy.ops.import_test.some_data is constructed
+    bl_idname = "export_kmesh.mesh_data_binary"  # important since its how bpy.ops.import_test.some_data is constructed
     bl_label = "Save .kmesh"
 
     filename_ext = ".kmesh"

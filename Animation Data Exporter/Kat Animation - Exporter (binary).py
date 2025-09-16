@@ -14,13 +14,16 @@ bl_info = {
 }
 
 import bpy
+import struct
+import concurrent.futures
+
 from bpy_extras.io_utils import ExportHelper
 from bpy.props import StringProperty, BoolProperty, EnumProperty
 from bpy.types import Operator
 
 # write .kanim data to disk
 def write_kanim_data(context, filepath):
-    f = open(filepath, "w", encoding='utf-8')
+    f = open(filepath, "wb")
     
     selected = bpy.context.selected_objects[0]
     curves = selected.animation_data.action.fcurves
@@ -32,8 +35,8 @@ def write_kanim_data(context, filepath):
               
     frame = 0
     while frame < frame_count:
-        frame_index = curves[0].keyframe_points[frame].co.x
-        f.write(frame_index.to_bytes(4, byteorder = 'little'))
+        frame_time = curves[0].keyframe_points[frame].co.x
+        f.write(struct.pack('f', frame_time))
 
         # position
         f.write(struct.pack('f',  curves[1].keyframe_points[frame].co.y))

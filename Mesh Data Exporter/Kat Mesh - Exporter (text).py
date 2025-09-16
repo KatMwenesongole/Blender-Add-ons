@@ -198,7 +198,7 @@ def write(context, filepath):
 
 class ExportMeshData(Operator, ExportHelper):
     """Export mesh data in Kat Mesh format [text] (.kmesh)""" 
-    bl_idname = "export_test.some_data"  # important since its how bpy.ops.import_test.some_data is constructed
+    bl_idname = "export_kmesh.mesh_data_text"  # important since its how bpy.ops.import_test.some_data is constructed
     bl_label = "Save .kmesh"
 
     # file extension
@@ -211,15 +211,15 @@ class ExportMeshData(Operator, ExportHelper):
 
 # export menu
 def menu_func_export(self, context):
-    self.layout.operator(ExportSomeData.bl_idname, text = "Kat Mesh [text] (.kmesh)")
+    self.layout.operator(ExportMeshData.bl_idname, text = "Kat Mesh [text] (.kmesh)")
 
 
 def register():
-    bpy.utils.register_class(ExportSomeData)
+    bpy.utils.register_class(ExportMeshData)
     bpy.types.TOPBAR_MT_file_export.append(menu_func_export)
 
 def unregister():
-    bpy.utils.unregister_class(ExportSomeData)
+    bpy.utils.unregister_class(ExportMeshData)
     bpy.types.TOPBAR_MT_file_export.remove(menu_func_export)
 
 
