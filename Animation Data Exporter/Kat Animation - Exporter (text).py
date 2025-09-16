@@ -3,6 +3,16 @@
 # Notice: (C) Copyright 2025 by Kat Mwenesongole. All Rights Reserved. 
 # ========================================================================
 
+bl_info = {
+    "name": "Kat Animation [text] (.kanim)",
+    "description": "Export animation data in Kat Animation format [text] (.kanim)",
+    "author": "Kat Mwenesongole",
+    "version": (1, 0),
+    "blender": (4, 5, 2),
+    "location": "File > Export",
+    "category": "Import-Export",
+}
+
 import bpy
 from bpy_extras.io_utils import ExportHelper
 from bpy.props import StringProperty, BoolProperty, EnumProperty
@@ -14,10 +24,11 @@ def write_kanim_data(context, filepath):
     
     selected = bpy.context.selected_objects[0]
     curves = selected.animation_data.action.fcurves
- 
+    
     frame_count = len(curves[0].keyframe_points)
+    frames_per_sec = bpy.context.scene.render.fps
     f.write('keyframes [%i]\n' % frame_count)
-    f.write('frames per sec [%i]\n\n' % bpy.context.scene.render.fps)
+    f.write('frames per sec [%i]\n\n' % frames_per_sec)
     
     frame = 0
     while frame < frame_count:
@@ -26,36 +37,36 @@ def write_kanim_data(context, filepath):
         
         # position
         f.write('[%s] %f, %f, %f\n' % (curves[0].data_path, 
-                                       curves[0].keyframe_points[frame].co.y,
                                        curves[1].keyframe_points[frame].co.y,
-                                       curves[2].keyframe_points[frame].co.y))                         
+                                       curves[2].keyframe_points[frame].co.y,
+                                      -curves[0].keyframe_points[frame].co.y))                         
         # rotation
-        rot_x = curves[3].keyframe_points[frame].co.y
-        rot_y = curves[3+1].keyframe_points[frame].co.y
-        rot_z = curves[3+2].keyframe_points[frame].co.y
+        rotation_x = curves[3].keyframe_points[frame].co.y
+        rotation_y = curves[3+1].keyframe_points[frame].co.y
+        rotation_z = curves[3+2].keyframe_points[frame].co.y
         
-        if(rot_x < 0): rot_x = -rot_x
-        else:          rot_x = (2*3.14159) - rot_x    
-        if(rot_y < 0): rot_y = -rot_y
-        else:          rot_y = (2*3.14159) - rot_y
-        if(rot_z < 0): rot_z = -rot_z
-        else:          rot_z = (2*3.14159) - rot_z
-        f.write('[%s] %f, %f, %f\n' % (curves[3].data_path, rot_x, rot_y, rot_z))                      
+        if(rotation_x < 0): rotation_x = -rotation_x
+        else:          rotation_x = (2*3.14159) - rotation_x    
+        if(rotation_y < 0): rotation_y = -rotation_y
+        else:          rotation_y = (2*3.14159) - rotation_y
+        if(rotation_z < 0): rotation_z = -rotation_z
+        else:          rotation_z = (2*3.14159) - rotation_z
+        f.write('[%s] %f, %f, %f\n' % (curves[3].data_path, rotation_y, rotation_z, rotation_x))                      
         
         # scale
         f.write('[%s] %f, %f, %f\n' % (curves[6].data_path, 
-                                       curves[6].keyframe_points[frame].co.y,
                                        curves[6+1].keyframe_points[frame].co.y,
-                                       curves[6+2].keyframe_points[frame].co.y)) 
+                                       curves[6+2].keyframe_points[frame].co.y,
+                                       curves[6].keyframe_points[frame].co.y)) 
         frame = frame + 1
-    
+        
     f.close()
     return {'FINISHED'}
 
 
 class ExportAnimData(Operator, ExportHelper):
-    """Export animation data in Kat Animation format (.kanim)"""
-    bl_idname = "export_test.some_data"  # Important since its how bpy.ops.import_test.some_data is constructed.
+    """Export animation data in Kat Animation format [text] (.kanim)"""
+    bl_idname = "export_kanim.anim_data_text"  # Important since its how bpy.ops.import_test.some_data is constructed.
     bl_label = "Save .kanim"
 
     filename_ext = ".kanim" #extension
@@ -64,7 +75,7 @@ class ExportAnimData(Operator, ExportHelper):
         default="*.kanim",
         options={'HIDDEN'},
         maxlen=255,  # Max internal buffer length, longer would be clamped.
-        )
+    )
     
     def execute(self, context):
         return write_kanim_data(context, self.filepath)
@@ -72,7 +83,7 @@ class ExportAnimData(Operator, ExportHelper):
 
 # Only needed if you want to add into a dynamic menu
 def menu_func_export(self, context):
-    self.layout.operator(ExportAnimData.bl_idname, text="Kat Animation (.kanim)")
+    self.layout.operator(ExportAnimData.bl_idname, text="Kat Animation [text] (.kanim)")
 
 # Register and add to the "file selector" menu (required to use F3 search "Text Export Operator" for quick access).
 def register():

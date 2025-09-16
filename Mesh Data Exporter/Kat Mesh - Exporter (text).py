@@ -4,13 +4,12 @@
 # ========================================================================
 
 bl_info = {
-    "name": "Kat, mesh data exporter [text] (.katt)",
-    "description": "custom mesh data [text]",
+    "name": "Kat Mesh [text] (.kmesh)",
+    "description": "Export mesh data in Kat Mesh format [text] (.kmesh)",
     "author": "Kat Mwenesongole",
     "version": (1, 0),
     "blender": (2, 80, 0),
     "location": "File > Export",
-    "support": "TESTING",
     "category": "Import-Export",
 }
 
@@ -197,14 +196,14 @@ def write(context, filepath):
     return {'FINISHED'}
 
 
-class ExportSomeData(Operator, ExportHelper):
-    """custom mesh data [text] (.kmt)""" 
+class ExportMeshData(Operator, ExportHelper):
+    """Export mesh data in Kat Mesh format [text] (.kmesh)""" 
     bl_idname = "export_test.some_data"  # important since its how bpy.ops.import_test.some_data is constructed
-    bl_label = "export (text) data"
+    bl_label = "Save .kmesh"
 
     # file extension
-    filename_ext = ".kmt"
-    filter_glob: StringProperty(default="*.kmt", options = {'HIDDEN'}, maxlen=255)
+    filename_ext = ".kmesh"
+    filter_glob: StringProperty(default="*.kmesh", options = {'HIDDEN'}, maxlen=255)
 
     def execute(self, context):
         return write(context, self.filepath)
@@ -212,7 +211,7 @@ class ExportSomeData(Operator, ExportHelper):
 
 # export menu
 def menu_func_export(self, context):
-    self.layout.operator(ExportSomeData.bl_idname, text = "Kat, mesh data exporter [text] (.katt)")
+    self.layout.operator(ExportSomeData.bl_idname, text = "Kat Mesh [text] (.kmesh)")
 
 
 def register():

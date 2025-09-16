@@ -4,13 +4,12 @@
 # ========================================================================
 
 bl_info = {
-    "name": "KAT - mesh data exporter [binary] (.kat)",
-    "description": "custom mesh data [binary]",
+    "name": "Kat Mesh [binary] (.kmesh)",
+    "description": "Export mesh data in Kat Mesh format [binary] (.kmesh)",
     "author": "Kat Mwenesongole",
     "version": (1, 0),
     "blender": (2, 80, 0),
     "location": "File > Export",
-    "support": "TESTING",
     "category": "Import-Export",
 }
 
@@ -219,30 +218,28 @@ def write(context, filepath):
     return {'FINISHED'}
 
 
-class ExportSomeData(Operator, ExportHelper):
-    """custom mesh data [binary] (.kat)""" 
+class ExportMeshData(Operator, ExportHelper):
+    """Export mesh data in Kat Mesh format [binary] (.kmesh)""" 
     bl_idname = "export_test.some_data"  # important since its how bpy.ops.import_test.some_data is constructed
-    bl_label = "export (binary) data"
+    bl_label = "Save .kmesh"
 
-    filename_ext = ".km"
+    filename_ext = ".kmesh"
     filter_glob: StringProperty(default="*.km", options = {'HIDDEN'}, maxlen=255)
 
     def execute(self, context):
         return write(context, self.filepath)
 
-
 # export menu
 def menu_func_export(self, context):
-    self.layout.operator(ExportSomeData.bl_idname, text = "KAT - mesh data exporter [binary] (.kat)")
+    self.layout.operator(ExportMeshData.bl_idname, text = "Kat Mesh [binary] (.kmesh)")
 
 def register():
-    bpy.utils.register_class(ExportSomeData)
+    bpy.utils.register_class(ExportMeshData)
     bpy.types.TOPBAR_MT_file_export.append(menu_func_export)
 
 def unregister():
-    bpy.utils.unregister_class(ExportSomeData)
+    bpy.utils.unregister_class(ExportMeshData)
     bpy.types.TOPBAR_MT_file_export.remove(menu_func_export)
-
 
 if __name__ == "__main__":
     register()
